@@ -21,6 +21,7 @@ jobs:
 
       - name: Train model
         run: |
+          conda activate workflow-ci
           mlflow run MLproject
 
       - name: Get latest MLflow run_id
