@@ -26,7 +26,7 @@ jobs:
 
       - name: Get latest MLflow run_id
         run: |
-          RUN_ID=$(ls -td mlruns/0/*/ | head -n 1 | cut -d'/' -f3)
+          RUN_ID=$(find mlruns/0 -mindepth 1 -maxdepth 1 -type d -printf "%f\n" | grep -E '^[a-f0-9]{32}$' | sort | tail -n 1)
           ls mlruns/0 -l
           echo "Latest run_id: $RUN_ID"
           
