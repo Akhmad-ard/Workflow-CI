@@ -1,52 +1,56 @@
 name: Workflow CI
 
-on:
+on: 
   push:
     branches: [ main ]
 
 jobs:
-  train:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout source code
         uses: actions/checkout@v3
 
-      - name: Setup Miniconda
-        uses: conda-incubator/setup-miniconda@v3
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
-          activate-environment: base
-          auto-activate-base: true
+          python-version: 3.12.7
 
-      - name: Install MLflow CLI (global)
+      - name: Install Dependencies
+        run: pip install mlflow
+
+      - name: Train model
         run: |
-          conda install -y pip
-          pip install mlflow
+          mlflow run ./MLProject --env-manager=local 
 
-      - name: Run MLflow project with Conda
-        run: |
-          mlflow run ./MLProject -P n_estimators=150 -P max_depth=15
-
-      - name: Get latest MLflow run_id
-        id: get_run
+      - name: Get latest MLflow RUN ID
         run: |
           RUN_ID=$(find mlruns/0 -mindepth 1 -maxdepth 1 -type d -printf "%f\n" | grep -E '^[a-f0-9]{32}$' | sort | tail -n 1)
-          echo "RUN_ID=$RUN_ID" >> $GITHUB_OUTPUT
+          ls mlruns/0 -l
+          echo "RUN_ID=$RUN_ID" >> $GITHUB_ENV
           echo "Latest run_id: $RUN_ID"
+          
+      - name: Check artifacts
+        run: |
+          ls ./mlruns/0/$/artifacts -l
 
-      - name: Copy MLflow artifacts
+      - name: Copy model.pkl artifact
         run: |
           mkdir -p temp-artifacts
-          cp -r mlruns/0/$RUN_ID/artifacts/* temp-artifacts/
+          cp -r mlruns/0/$/artifacts/model temp-artifacts/
 
-      - name: Push model artifacts to model-artifacts branch
+      - name: Upload model to GitHub branch (model-artifacts)
         run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          mkdir temp-artifacts
+          cp model.pkl temp-artifacts/
+
           cd temp-artifacts
           git init
           git checkout --orphan model-artifacts
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add .
-          git commit -m "Add MLflow model artifacts"
-          git remote add origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
-          git push --force origin model-artifacts
+          git commit -m "Add MLflow model artifact from CI"
+          git push --force https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:model-artifacts
