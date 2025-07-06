@@ -17,6 +17,7 @@ jobs:
         with:
           environment-file: MLProject/conda.yaml
           activate-environment: workflow-ci
+          auto-activate-base: true
 
       - name: Train model
         run: |
