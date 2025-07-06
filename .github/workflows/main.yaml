@@ -28,6 +28,7 @@ jobs:
         run: |
           RUN_ID=$(find mlruns/0 -mindepth 1 -maxdepth 1 -type d -printf "%f\n" | grep -E '^[a-f0-9]{32}$' | sort | tail -n 1)
           ls mlruns/0 -l
+          echo "RUN_ID=$RUN_ID" >> $GITHUB_ENV
           echo "Latest run_id: $RUN_ID"
           
       - name: Copy model.pkl artifact
