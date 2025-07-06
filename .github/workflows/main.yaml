@@ -1,0 +1,46 @@
+name: Workflow CI
+
+on: 
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      - name: Setup Miniconda
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          environment-file: MLProject/conda.yaml
+          activate-environment: workflow-ci
+          auto-activate-base: false
+
+      - name: Train model
+        run: |
+          conda activate workflow-ci
+          mlflow run MLproject
+
+      - name: Get latest MLflow run_id
+        run: |
+          RUN_ID=$(ls -td mlruns/0/*/ | head -n 1 | cut -d'/' -f3)
+          echo "RUN_ID=$RUN_ID" >> $GITHUB_ENV
+          echo "Latest run_id: $RUN_ID"
+    
+      - name: Upload model to GitHub branch (model-artifacts)
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          mkdir temp-artifacts
+          cp model.pkl temp-artifacts/
+
+          cd temp-artifacts
+          git init
+          git checkout --orphan model-artifacts
+          git add .
+          git commit -m "Add MLflow model artifact from CI"
+          git push --force https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:model-artifacts

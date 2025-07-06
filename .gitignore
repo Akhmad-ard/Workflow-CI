@@ -1,0 +1,41 @@
+# MLflow tracking directory
+mlruns/
+
+# Data files (opsional, jika ingin abaikan data mentah)
+data/*.csv
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# VS Code
+.vscode/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Virtual environments
+env/
+venv/
+.venv/
+
+# pipenv and poetry
+Pipfile.lock
+poetry.lock
+
+# Jupyter runtime
+*.pid
+*.log
+
+# Model artifacts (jika log_model disimpan ke folder lokal)
+model/
+models/
+
+# Cache dan log
+*.log
+.cache/
