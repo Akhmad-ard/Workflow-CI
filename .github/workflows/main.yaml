@@ -18,7 +18,7 @@ jobs:
           python-version: 3.12.7
 
       - name: Install Dependencies
-        run: pip install mlflow
+        run: pip install mlflow scikit-learn
 
       - name: Train model
         run: |
@@ -28,7 +28,7 @@ jobs:
         run: |
           RUN_ID=$(find mlruns/0 -mindepth 1 -maxdepth 1 -type d -printf "%f\n" | grep -E '^[a-f0-9]{32}$' | sort | tail -n 1)
           ls mlruns/0 -l
-          echo "RUN_ID=$RUN_ID" >> $GITHUB_ENV
+          echo "run_id=$RUN_ID" >> $GITHUB_ENV
           echo "Latest run_id: $RUN_ID"
           
       - name: Check artifact
@@ -39,7 +39,7 @@ jobs:
       - name: Copy model.pkl artifact
         run: |
           mkdir -p temp-artifacts
-          cp ./mlruns/0/$RUN_ID/artifacts/model/model.pkl temp-artifacts/
+          cp -r mlruns/0/${{ steps.get_run.outputs.run_id }}/artifacts/model temp-artifacts/
 
       - name: Upload model to GitHub branch (model-artifacts)
         run: |
