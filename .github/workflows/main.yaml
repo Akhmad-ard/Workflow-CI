@@ -17,12 +17,11 @@ jobs:
         with:
           environment-file: MLProject/conda.yaml
           activate-environment: workflow-ci
-          auto-activate-base: true
 
       - name: Train model
         run: |
-          conda activate workflow-ci
           mlflow run MLproject
+        shell: bash -l {0}   # ✅ PENTING agar conda env aktif
 
       - name: Get latest MLflow run_id
         run: |
