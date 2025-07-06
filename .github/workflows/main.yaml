@@ -18,11 +18,11 @@ jobs:
           python-version: 3.12
 
       - name: Install Dependencies
-        run: pip install mlflow pandas scikit-learn
+        run: pip install mlflow
 
       - name: Train model
         run: |
-          mlflow run ./MLProject --no-conda
+          mlflow run MLProject
 
       - name: Get latest MLflow run_id
         run: |
