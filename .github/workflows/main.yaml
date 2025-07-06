@@ -12,10 +12,9 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v3
 
-      - name: Setup Conda
-        uses: conda-incubator/setup-miniconda@v3
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
-          auto-activate-base: true
           python-version: 3.12.7
 
       - name: Install Dependencies
@@ -23,7 +22,7 @@ jobs:
 
       - name: Train model
         run: |
-          mlflow run MLProject
+          mlflow run MLProject --env-manager=local
 
       - name: Find latest registered model artifacts
         id: find_model
