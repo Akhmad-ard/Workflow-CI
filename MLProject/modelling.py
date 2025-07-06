@@ -5,11 +5,7 @@ import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, r2_score
 
-# Autolog semua parameter dan metrics
-mlflow.sklearn.autolog()
-
 # Load Dataset
-
 path = "./Predict_Student_Performance_preprocessing"
 
 df_train = pd.read_csv(f"{path}/train.csv")
@@ -21,11 +17,12 @@ y_train = df_train["Grades"]
 X_test = df_test.drop(columns=['Grades'])
 y_test = df_test["Grades"]
 
+# Hyperparameter
 n_estimators = int(sys.argv[1]) if len(sys.argv) > 1 else 150
 max_depth = int(sys.argv[2]) if len(sys.argv) > 2 else 15
 
 with mlflow.start_run():
-    model = RandomForestRegressor()
+    model = RandomForestRegressor(n_estimators=n_estimators, max_depth=max_depth)
     model.fit(X_train, y_train)
 
     predictions = model.predict(X_test)
@@ -35,8 +32,6 @@ with mlflow.start_run():
         artifact_path="model",
         input_example=X_train[0:5]
     )
-
-    model.fit(X_train, y_train)
 
     mse = mean_squared_error(y_test, predictions)
     r2 = r2_score(y_test, predictions)
