@@ -34,7 +34,8 @@ jobs:
       - name: Copy model.pkl artifact
         run: |
           mkdir -p temp-artifacts
-          cp mlruns/0/$RUN_ID/artifacts/model/model.pkl temp-artifacts/
+          ls ./mlruns/0/$RUN_ID/artifacts/model -l
+          cp ./mlruns/0/$RUN_ID/artifacts/model/model.pkl temp-artifacts/
 
       - name: Upload model to GitHub branch (model-artifacts)
         run: |
