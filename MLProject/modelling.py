@@ -1,12 +1,9 @@
 import sys
 import mlflow
-import mlflow.sklearn
+import mlflow.sklearn as mlflow_sk
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, r2_score
-
-# Autolog
-# mlflow.sklearn.autolog()
 
 # Load Dataset
 path = "./Predict_Student_Performance_preprocessing"
@@ -30,9 +27,9 @@ with mlflow.start_run():
 
     predictions = model.predict(X_test)
 
-    mlflow.sklearn.log_model(
+    mlflow_sk.log_model(
         sk_model=model,
-        artifact_path="model",
+        name="model",
         input_example=X_train[0:5]
     )
 

@@ -4,12 +4,7 @@ dependencies:
 - python=3.12.7
 - pip<=24.2
 - pip:
-  - dagshub
   - mlflow
-  - cloudpickle
-  - numpy
   - pandas
-  - psutil
   - scikit-learn
-  - scipy
 name: workflow-ci

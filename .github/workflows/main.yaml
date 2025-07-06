@@ -22,27 +22,19 @@ jobs:
 
       - name: Train model
         run: |
-          mlflow run ./MLProject --env-manager=local
-          RUN_ID=$(find mlruns/0 -mindepth 1 -maxdepth 1 -type d -printf "%f\n" | grep -E '^[a-f0-9]{32}$' | sort | tail -n 1)
-          echo "RUN_ID=$RUN_ID" >> $GITHUB_ENV
-          echo "Latest run_id: $RUN_ID"
-          ls ./mlruns/0/$RUN_ID/artifacts -l
+          mlflow run MLProject
 
-      # - name: Get latest MLflow RUN ID
-      #   run: |
-      #     RUN_ID=$(find mlruns/0 -mindepth 1 -maxdepth 1 -type d -printf "%f\n" | grep -E '^[a-f0-9]{32}$' | sort | tail -n 1)
-      #     echo "RUN_ID=$RUN_ID" >> $GITHUB_ENV
-      #     echo "Latest run_id: $RUN_ID"
-      #     ls ./mlruns/0/$RUN_ID/artifacts -l
-          
-      - name: Check artifacts
+      - name: Find latest registered model artifacts
+        id: find_model
         run: |
-          ls ./mlruns/0/$RUN_ID/artifacts -l
-
-      - name: Copy model.pkl artifact
+          MODEL_DIR=$(find mlruns/0/models -maxdepth 1 -type d -name "m-*" | sort | tail -n 1)
+          echo "Found model directory: $MODEL_DIR"
+          echo "MODEL_DIR=$MODEL_DIR" >> $GITHUB_OUTPUT
+          
+      - name: Copy model artifacts
         run: |
           mkdir -p temp-artifacts
-          cp -r mlruns/0/$/artifacts/model temp-artifacts/
+          cp -r "$MODEL_DIR/artifacts" temp-artifacts/
 
       - name: Upload model to GitHub branch (model-artifacts)
         run: |
