@@ -33,7 +33,7 @@ jobs:
           
       - name: Check artifacts
         run: |
-          ls ./mlruns/0/$/artifacts -l
+          ls ./mlruns/0/$RUN_ID/artifacts -l
 
       - name: Copy model.pkl artifact
         run: |
