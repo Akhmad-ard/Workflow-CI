@@ -27,8 +27,8 @@ jobs:
       - name: Find latest registered model artifacts
         run: |
           MODEL_DIR=$(find mlruns/0/models -maxdepth 1 -type d -name "m-*" | sort | tail -n 1)
+          echo "MODEL_DIR=$MODEL_DIR" >> $GITHUB_ENV
           echo "Found model directory: $MODEL_DIR"
-          echo "MODEL_DIR=$MODEL_DIR" >> $GITHUB_OUTPUT
           
       - name: Copy model artifacts
         run: |
