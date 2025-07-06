@@ -22,7 +22,7 @@ jobs:
 
       - name: Train model
         run: |
-          mlflow run ./MLproject
+          mlflow run ./MLProject
 
       - name: Get latest MLflow run_id
         run: |
