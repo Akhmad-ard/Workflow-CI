@@ -12,17 +12,17 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v3
 
-      - name: Setup Miniconda
-        uses: conda-incubator/setup-miniconda@v3
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
-          environment-file: MLProject/conda.yaml
-          activate-environment: workflow-ci
-          auto-activate-base: false
+          python-version: 3.12
+
+      - name: Install Dependencies
+        run: pip install mlflow pandas scikit-learn
 
       - name: Train model
         run: |
           mlflow run MLproject
-        shell: bash -l {0}   # ✅ PENTING agar conda env aktif
 
       - name: Get latest MLflow run_id
         run: |
