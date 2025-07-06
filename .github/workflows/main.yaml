@@ -27,6 +27,7 @@ jobs:
       - name: Get latest MLflow run_id
         run: |
           RUN_ID=$(ls -td mlruns/0/*/ | head -n 1 | cut -d'/' -f3)
+          ls mlruns/0 -l
           echo "Latest run_id: $RUN_ID"
           
       - name: Copy model.pkl artifact
