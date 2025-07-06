@@ -3,6 +3,8 @@ name: Workflow CI
 on: 
   push:
     branches: [ main ]
+    paths:
+      - 'MLProject/Predict_Student_Performance_preprocessing/**'
   workflow_dispatch:
 
 jobs:
