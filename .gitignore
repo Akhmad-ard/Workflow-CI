@@ -1,5 +1,5 @@
 # MLflow tracking directory
-mlruns/
+# mlruns/
 
 # Data files (opsional, jika ingin abaikan data mentah)
 data/*.csv
