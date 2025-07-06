@@ -25,7 +25,6 @@ jobs:
           mlflow run MLProject --env-manager=local
 
       - name: Find latest registered model artifacts
-        id: find_model
         run: |
           MODEL_DIR=$(find mlruns/0/models -maxdepth 1 -type d -name "m-*" | sort | tail -n 1)
           echo "Found model directory: $MODEL_DIR"
